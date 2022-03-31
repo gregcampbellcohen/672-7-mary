@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset=utf-8 />
+  <title>Lesson 07 Template</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+  <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+
+  <style>
+    /* Styles for full-screen map */
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id='map'></div>
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <script src="power-plants.js"></script>
+  <script>
+      console.log(plants)
+  </script>
+  <script>
+    
+    var options = {
+      center: [36, -94],
+      zoom: 4
+    }
+
+    // create a Leaflet map in our division container with id of 'map'
+    var map = L.map('map', options);
+
+    // Leaflet providers base map URL
+    var basemap_source =
+      'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}'
+
+    // Leaflet providers attributes
+    var basemap_options = {
+      attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+      bounds: [
+        [-85.0511287776, -179.999999975],
+        [85.0511287776, 179.999999975]
+      ],
+      minZoom: 1,
+      maxZoom: 8,
+      format: 'jpg',
+      time: '',
+      opacity: 0.5,
+      tilematrixset: 'GoogleMapsCompatible_Level'
+    };
+
+    // request some basemap tiles and add to the map
+    var tiles = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
+});  
+    tiles.addTo(map);
+
+    var plantIcon = L.icon({
+    iconUrl: 'images/coal.svg',
+    iconSize: [40, 40]
+    });
+    L.geoJson(plants, {
+      pointToLayer: function(feature,latlng) {
+    return L.marker(latlng, {
+        icon: plantIcon
+    });
+},
+    filter : function(feature, layer) {
+    if(feature.properties.capacity_mw < 500 &&
+        feature.properties.fuel_source.Coal){
+        return feature;   
+    }
+}
+}).addTo(map);
+
+  
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset=utf-8 />
+  <title>Lesson 07 Template</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+  <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+
+  <style>
+    /* Styles for full-screen map */
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id='map'></div>
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <script>
+    // map options
+    var options = {
+      center: [38, -90],
+      zoom: 4
+    }
+
+    // create a Leaflet map in our division container with id of 'map'
+    var map = L.map('map', {
+   center: [37.759, -77.48],
+   zoom: 7
+    });
+
+    // Leaflet providers base map URL
+    var basemap_source =
+      'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}'
+
+    // Leaflet providers attributes
+    var basemap_options = {
+      attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
+      bounds: [
+        [-85.0511287776, -179.999999975],
+        [85.0511287776, 179.999999975]
+      ],
+      minZoom: 1,
+      maxZoom: 8,
+      format: 'jpg',
+      time: '',
+      opacity: 0.5,
+      tilematrixset: 'GoogleMapsCompatible_Level'
+    };
+
+    // request some basemap tiles and add to the map
+    var tiles = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/dark_all/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
+});  
+tiles.addTo(map);
+
+  var places = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7e7e7e",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "name": "Fredericksburg"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.4605655670166,
+          38.303206730525794
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7e7e7e",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "name": "Bull Run"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.47558593749999,
+          38.7508703622086
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7e7e7e",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "name": "Chancellorsville"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.64965057373047,
+          38.31101948032927
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "marker-color": "#7e7e7e",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "name": "Petersburg"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.40005493164062,
+          37.22704803306454
+        ]
+      }
+    }
+  ]
+};
+
+var placesLeaflet = L.geoJson(places, {
+    pointToLayer : function(feature, latlng) {
+        console.log(feature);
+        return L.circle(latlng, 20000);
+    }
+}).addTo(map);
+
+  </script>
+
+</body>
+
+</html>

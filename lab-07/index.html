@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset=utf-8 />
+	<title>Lab 07 — US Power Plants</title>
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+	<link rel='icon' href='https://newmapsplus.github.io/favicon.ico' type='image/x-icon' />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+	<link href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,900i" rel="stylesheet">
+
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background: #ebebee;
+			font-family: 'Raleway', sans-serif;
+			font-weight: 300;
+			color: #3d3d3d;
+			font-size: 100%;
+			/* 16px is default browser size */
+
+		}
+
+		header,
+		section,
+		footer {
+			width: 80%;
+			margin: 10px auto;
+		}
+
+		h1 {
+			font-weight: 900;
+			font-size: 2.8em;
+			font-style: italic;
+			/* The em unit. 3x the current size */
+			letter-spacing: .02em;
+			margin: 5px 0;
+			/* text-transform: uppercase; */
+		}
+
+		h2 {
+			font-weight: 300;
+			color: #63666a;
+			font-size: 2.2em;
+			letter-spacing: .06em;
+			font-style: italic;
+			margin: 5px 0;
+		}
+
+		h3 {
+			font-weight: 300i;
+			font-size: 1.5em;
+			margin-bottom: 5px;
+		}
+
+		p {
+			font-size: 1.3em;
+			line-height: 1.8em;
+			margin-bottom: 5px;
+		}
+
+		a {
+      		color: #f77f00;
+     		font-weight: bold;
+      		text-decoration: none;
+  	    }
+
+		a:hover {
+			text-decoration: underline;
+		}
+
+		ul {
+			padding: 0px 20px 4px 20px;
+			font-size: 1.1em;
+			line-height: 1.2em;
+			color: #63666a;
+		}
+
+		li {
+			margin: 10px 0
+		}
+
+		hr {
+			margin: 20px 0;
+			border: 0;
+			height: 1px;
+			background: #63666a;
+
+		}
+
+		.linkbox {
+			margin: 3px 0 20px 0;
+			display: block;
+			font-size: 0.9em;
+			font-weight: 300;
+			line-height: 1.3em;
+		}
+
+		#map {
+			width: 100%;
+			height: 450px;
+			margin: 20px auto;
+
+		}
+
+		.max-image-width {
+			width: 100%;
+		}
+
+		/* Use float property to make two-column layout */
+		.first-column {
+			float: left;
+			width: 49%;
+			padding-right: 2%;
+		}
+
+		.column {
+			float: left;
+			width: 49%;
+		}
+
+		/* Clear floats after the columns */
+		.row::after {
+			content: "";
+			display: block;
+			clear: both;
+		}
+
+		/* When browser is 900px wide or less */
+		@media screen and (max-width: 900px) {
+
+			.first-column,
+			.second-column {
+				width: 100%;
+			}
+		}
+	</style>
+</head>
+
+<body>
+
+	<header>
+		<h1>U.S. Power Plants</h1>
+	</header>
+	<section>
+		<div class="row">
+			<div id="map"></div>
+
+			<div class="first-column">
+				<h2>Patterns of energy production</h2>
+				<p>
+					Old Dominion Electric Cooperative (ODEC) is an electric generation and transmission cooperative headquartered in Glen Allen, Virginia. ODEC provides wholesale power to its 11 member electric cooperatives in the states of Virginia, Maryland, and Delaware in the United States. ODEC generates its electricity from coal, fuel oil, natural gas, and nuclear energy.
+
+On February 23, 2018, ODEC named Marcus Harris as the organization's next president and CEO. Prior to joining ODEC, he served as executive vice president and CEO of Kansas Electric Power Cooperative.
+					(<a href="https://en.wikipedia.org/wiki/Old_Dominion_Electric_Cooperative">Wikipedia</a>)
+				</p>
+
+				<p><b>Social links</b></p>
+				<ul>
+					<li>See my projects on GitHub: <a href="https://github.com/gregcampbellcohen">Greg Campbell-Cohen</a>. </li>
+					<li>Follow me on Twitter: <a href="https://twitter.com/gcampbellcohen">@gcampbellcohen</a>. </li>
+					<li>Visit my <a href='https://www.linkedin.com/in/greg-campbell-cohen-96614792/'>LinkedIn</a>. </li>
+				</ul>
+
+
+			</div>
+			<div class="column">
+				<img class="max-image-width" src="http://www.virginiaplaces.org/energy/graphics/odecservicearea.png" title="Old Dominion Electric Cooperative's service area in Virginia">
+				<div class="linkbox">
+					Old Dominion Electric Cooperative's service area in Virginia
+				</div>
+			</div>
+		</div>
+	</section>
+	<footer>
+		<hr>
+
+		<a href="https://newmapsplus.github.io">
+			<img src="https://newmapsplus.github.io/assets/graphics/logo-2018-nmp-75px-h-gray.png" alt="University of Kentucky Geography">
+		</a>
+
+		<a href="https://uky-gis.github.io">
+			<img src="https://newmapsplus.github.io/assets/graphics/logo-2018-geography-75px-h.png" alt="University of Kentucky Geography">
+		</a>
+
+	</footer>
+
+	<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+	<script src="data/power-plants.js"></script>
+    <script>
+		// map options
+		var options = {
+		  center: [37.5, -78],
+		  zoom: 7,
+		};
+  
+		// create a Leaflet map in our division container with id of 'map'
+		var map = L.map("map", options);
+  
+		// Leaflet providers base map URL
+		var basemap_source =
+		  "https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/dark_all/{z}/{x}/{y}.png";
+  
+		// Leaflet providers attributes
+		var basemap_options = {
+		  attribution:
+			'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+		  subdomains: "abcd",
+		  maxZoom: 19,
+		};
+  
+		// request some basemap tiles and add to the map
+		var tiles = L.tileLayer(basemap_source, basemap_options).addTo(map);
+  
+		plants.features.sort(function (a, b) {
+		  return b.properties.capacity_mw - a.properties.capacity_mw;
+		});
+  
+		var commonStyles = {
+		  weight: 1,
+		  stroke: 1,
+		  fillOpacity: 0.8,
+		};
+  
+		var hydroLayer = L.geoJson(plants, {
+		  pointToLayer: function (feature, latlng) {
+			return L.circleMarker(latlng, commonStyles);
+		  },
+		  filter: function (feature) {
+			if (feature.properties.fuel_source.Hydro) {
+			  return feature;
+			}
+		  },
+		  style: function (feature) {
+			return {
+			  color: "#1f78b4",
+			  fillColor: "#1f78b4",
+			  radius: getRadius(feature.properties.fuel_source.Hydro),
+			};
+		  },
+		  onEachFeature: function (feature, layer) {
+			layer.on("mouseover", function () {
+			  layer.setStyle({
+				fillColor: "orange",
+			  });
+			});
+			layer.on("mouseout", function () {
+			  layer.setStyle({
+				fillColor: "#1f78b4",
+			  });
+			});
+
+			var popup = buildPopup(layer.feature.properties)
+			layer.bindPopup(popup);
+
+		  },
+		}).addTo(map);
+  
+		var windLayer = L.geoJson(plants, {
+		  pointToLayer: function (feature, latlng) {
+			return L.circleMarker(latlng, commonStyles);
+		  },
+		  filter: function (feature) {
+			if (feature.properties.fuel_source.Wind) {
+			  return feature;
+			}
+		  },
+		  style: function (feature) {
+			return {
+			  color: "#a6cee3",
+			  fillColor: "#a6cee3",
+			  radius: getRadius(feature.properties.fuel_source.Wind),
+			};
+		  },
+		  onEachFeature: function (feature, layer) {
+			layer.on("mouseover", function () {
+			  layer.setStyle({
+				fillColor: "purple",
+			  });
+			});
+			layer.on("mouseout", function () {
+			  layer.setStyle({
+				fillColor: "#a6cee3",
+			  });
+			});
+			var popup = buildPopup(layer.feature.properties)
+			layer.bindPopup(popup);
+		  }
+		}).addTo(map);
+  
+		function getRadius(area) {
+		  var radius = Math.sqrt(area/Math.PI);
+		  return radius *.6;
+		}
+
+		function buildPopup(p) {
+			var popup = `<b>${p.plant_name}</b><br>
+							${p.capacity_mw} MW`
+
+			for (var f in p.fuel_source) {
+				popup += `<br><b>${f}:</b> ${p.fuel_source[f]} MW`
+			}
+
+			return popup
+		}
+	  </script>
+
+</body>
+
+</html>
